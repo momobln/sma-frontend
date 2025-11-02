@@ -1,10 +1,10 @@
-"use client";
+"use client";  //(Dynamic Route)
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { api } from "../../../../lib/axiosClient";
 
-export default function EditShiftPage() {
+export default function EditShiftPage() { 
   const router = useRouter();
   const params = useParams();
   const id = params.id;

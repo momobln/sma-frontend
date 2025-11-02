@@ -1,16 +1,23 @@
 "use client";
-import { useState } from "react";
-import { api } from "../../lib/axiosClient";
-import { useRouter } from "next/navigation";
+import { useState } from "react";// نستورد لتخزين البيانات (مثل البريد الإلكتروني وكلمة السر).
 
-export default function LoginPage() {
+import { api } from "../../lib/axiosClient"; // I Axios => API (backend+frontend)
+import { useRouter } from "next/navigation"; 
+
+export default function LoginPage() {   // Credirect after successful login.
+
   const router = useRouter();
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
+  const [form, setForm] = useState({ email: "", password: "" }); 
+  // نُنشئ حالة (state) لحفظ بيانات المستخدم المدخلة في النموذج.
+  // setForm تُستخدم لتحديث القيم أثناء الكتابة.
 
-  async function handleLogin(e: React.FormEvent) {
+  const [error, setError] = useState("");
+  // حالة ثانية لتخزين رسالة الخطأ في حال فشل تسجيل الدخول.
+
+  async function handleLogin(e: React.FormEvent) { //هذا نوع خاص من React يُستخدم لتعريف نوع الحدث event في النماذج
+        // Runs when the form is submitted.
     e.preventDefault();
-    try {
+    try { //try ← نضع فيه العملية الحساسة (الاتصال بالسيرفر).
       const res = await api.post("/auth/login", form);
       localStorage.setItem("token", res.data.token);
       router.push("/shifts");
@@ -39,7 +46,14 @@ export default function LoginPage() {
         />
         <button className="bg-blue-600 text-white p-2">Login</button>
       </form>
+      {/* Show error if exists */}
       {error && <p className="text-red-600 mt-2">{error}</p>}
     </div>
   );
 }
+
+/*try { ... } catch { ... }
+هي طريقة في JavaScript لمعالجة الأخطاء (Error Handling).
+أي كود يمكن أن يفشل (مثل اتصال بـ API أو قراءة ملف)، نضعه داخل try،
+وإذا حدث خطأ أثناء التنفيذ، الكود داخل catch هو الذي يُنفّذ  */
+//لذلك نستخدم الانتشار (spread operator ...) للاحتفاظ بالباقي.

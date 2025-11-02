@@ -14,7 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <nav className="p-4 bg-gray-100 flex justify-between">
-          <h1 className="font-bold" >Work Day</h1>
+          <h1 className="font-bold" >Shifts Ledger</h1>
           <button onClick={handleLogout} className="text-red-600">
             Logout
           </button>

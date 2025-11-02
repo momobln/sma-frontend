@@ -18,29 +18,30 @@ interface Shift {
 
 export default function ShiftsPage() {
   const [shifts, setShifts] = useState<Shift[]>([]);
-  const [user, setUser] = useState<{ id: number; email: string } | null>(null);
+  // نُخزن جميع الشفتات القادمة من السيرفر في مصفوفة.
+  const [user, setUser] = useState<{ id: number; email: string } | null>(null);  // نُخزن بيانات المستخدم الحالي (مأخوذة من التوكن).
   const [totalHours, setTotalHours] = useState<number>(0);
 
-  // ✅ Load user from JWT
-  useEffect(() => {
-    const token = localStorage.getItem("token");
+  //  Load user from JWT
+  useEffect(() => { //هذا الكود يعمل مرة واحدة فقط عندما تفتح الصفحة.
+    const token = localStorage.getItem("token"); // نبحث عن التوكن الذي حفظناه عند تسجيل الدخول.لو لم يوجد، نخرج فورًا (المستخدم غير مسجل دخول).
     if (!token) return;
 
-   try {
-  const payload = JSON.parse(atob(token.split(".")[1]));
-  setTimeout(() => setUser(payload), 0);
+   try { //vlt. n.func
+  const payload = JSON.parse(atob(token.split(".")[1]));//الجزء الأوسط (payload) يحتوي على معلومات المستخدم بشكل مشفّر (Base64).
+  setTimeout(() => setUser(payload), 0);//تفك التشفير من Base64 إلى نص عادي.atob
 } catch {
   setTimeout(() => setUser(null), 0);
 }
 
   }, []);
 
-  // ✅ Fetch all shifts
+  // Fetch all shifts
   useEffect(() => {
-    api.get("/shifts").then((res) => setShifts(res.data));
+    api.get("/shifts").then((res) => setShifts(res.data)); //بمجرد تحميل الصفحة، يتم إرسال طلب إلى /shifts لجلب كل الشفتات.
   }, []);
 
-  // ✅ Fetch total worked hours for logged-in user
+  // Fetch total worked hours for logged-in user
   useEffect(() => {
     async function fetchHours() {
       const token = localStorage.getItem("token");
@@ -48,7 +49,7 @@ export default function ShiftsPage() {
 
       try {
         const res = await api.get("/shifts/my/total-hours", {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token}` }, //Bearer  كلمة ثابتة تعني "أحمل التوكن التالي"
         });
         setTotalHours(res.data.totalHours);
       } catch {
@@ -59,7 +60,7 @@ export default function ShiftsPage() {
     fetchHours();
   }, []);
 
-  // ✅ Delete a shift
+  //  Delete a shift
   async function handleDelete(id: number) {
     const token = localStorage.getItem("token");
     if (!token) return alert("Not authorized");
@@ -79,7 +80,7 @@ export default function ShiftsPage() {
     <div className="flex flex-col items-center p-6 min-h-screen">
       <h1 className="text-2xl font-bold mb-4">All Shifts</h1>
 
-      {/* ✅ Total Hours Box */}
+      {/*  Total Hours Box */}
       <div
         style={{
           backgroundColor: "white",
@@ -152,3 +153,13 @@ export default function ShiftsPage() {
     </div>
   );
 }
+
+/*.map() تعني: مرّ على كل عنصر داخل المصفوفة shifts وارجع لي صف (tr) جديد لكل شفت.
+بمعنى آخر:
+إذا عندك 3 شفتات في قاعدة البيانات → هذا الكود سينشئ 3 صفوف داخل الجدول.
+نضع خاصية key={s.id} حتى يتميّز كل صف عن الآخر (مطلوب في React عند استخدام .map()).*/
+
+/*user && user.id === s.guardId ? ( ... ) : ( ... )
+إذا كان المستخدم الحالي (user) موجود
+و رقم المستخدم user.id يساوي s.guardId (يعني هو صاحب هذا الشفت)
+→ نعرض له الأزرار Edit و Delete.*/

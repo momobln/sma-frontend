@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { api } from "../../../lib/axiosClient";
+import { api } from "../../../lib/axiosClient"; // (api) حتى نتمكن من إرسال الطلبات إلى  (backend).
 import { useRouter } from "next/navigation";
 
 export default function CreateShiftPage() {
@@ -37,7 +37,7 @@ export default function CreateShiftPage() {
         <input
           className="border p-2"
           placeholder="Guard Name"
-          value={form.guardName}
+          value={form.guardName} 
           onChange={(e) => setForm({ ...form, guardName: e.target.value })}
         />
         <input
@@ -76,3 +76,4 @@ export default function CreateShiftPage() {
     </div>
   );
 }
+//On submit, it sends a POST request to /shifts with the JWT token for authorization.
